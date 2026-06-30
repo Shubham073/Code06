@@ -12,8 +12,6 @@ AZURE_SIGNALR_ENDPOINT=
 AZURE_SIGNALR_HUB=procurementchat
 AZURE_SIGNALR_ACCESS_KEY=
 ACS_CONNECTION_STRING=
-MONGO_URI=
-MONGO_DB=
 
 Frontend env example
 Place in .env.example (or copy to .env for local run):
