@@ -1,0 +1,37 @@
+Use these as simple POC templates.
+
+Backend env example
+Place in .env.example (or copy to .env for local run):
+
+DATABASE_URL=postgresql+psycopg://username:password@host:5432/scm_procurement
+SECRET_KEY=replace-with-a-long-random-secret
+CORS_ORIGINS=https://your-frontend.azurewebsites.net,https://your-staticapp.azurestaticapps.net
+
+Optional integrations
+AZURE_SIGNALR_ENDPOINT=
+AZURE_SIGNALR_HUB=procurementchat
+AZURE_SIGNALR_ACCESS_KEY=
+ACS_CONNECTION_STRING=
+MONGO_URI=
+MONGO_DB=
+
+Frontend env example
+Place in .env.example (or copy to .env for local run):
+
+VITE_API_BASE_URL=https://your-backend.azurewebsites.net
+VITE_API_TIMEOUT=30000
+
+VITE_AUTH_TOKEN_KEY=pai_access_token
+VITE_AUTH_REFRESH_TOKEN_KEY=pai_refresh_token
+VITE_AUTH_TOKEN_EXPIRY_KEY=pai_token_expiry
+
+VITE_ENABLE_ANALYTICS=false
+VITE_ENABLE_DEBUG_MODE=false
+VITE_ENABLE_MOCK_API=false
+
+VITE_SENTRY_DSN=
+VITE_APP_INSIGHTS_KEY=
+
+VITE_ENV=production
+
+If you want, I can also add a ready-to-use Azure App Settings checklist in both READMEs with these exact keys.
