@@ -1,7 +1,11 @@
 import apiClient from '../axios';
 import { User } from '@/models';
 
-type PinType = 'po' | 'po_to_review' | 'mrp_exception' | 'po_details_lines' | 'po_details_documents';
+export type PinType = 'po' | 'po_to_review' | 'mrp_exception' | 'po_details_lines' | 'po_details_documents';
+
+type BatchPinnedRowsResponse = {
+  pinned_rows: Partial<Record<PinType, string[]>>;
+};
 
 export const userService = {
   // Get users by role
@@ -22,6 +26,21 @@ export const userService = {
   ): Promise<string[]> => {
     const response = await apiClient.get<{ pinned_rows: string[] }>(
       `/user-pref/pinned-rows?user_id=${userId}&pin_type=${pinType}`
+    );
+
+    return response.data.pinned_rows;
+  },
+
+  getPinnedRowsBatch: async (
+    userId: string,
+    pinTypes: PinType[]
+  ): Promise<Partial<Record<PinType, string[]>>> => {
+    const params = new URLSearchParams();
+    params.append('user_id', userId);
+    pinTypes.forEach((pinType) => params.append('pin_types', pinType));
+
+    const response = await apiClient.get<BatchPinnedRowsResponse>(
+      `/user-pref/pinned-rows/batch?${params.toString()}`
     );
 
     return response.data.pinned_rows;

@@ -42,6 +42,7 @@ const PurchaseOrderDetails: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const userId = user?.id;
   const role = user?.role || '';
   const supplier = isSupplierRole(role);
 
@@ -132,7 +133,6 @@ const PurchaseOrderDetails: React.FC = () => {
   const refreshPageAfterDialogAction = useCallback(async () => {
     if (!id) return;
     await Promise.all([reloadPo(), reloadHistory(), reloadDocuments()]);
-    window.location.reload();
   }, [id, reloadPo, reloadHistory, reloadDocuments]);
 
   const reloadDocumentTags = useCallback(async () => {
@@ -150,14 +150,6 @@ const PurchaseOrderDetails: React.FC = () => {
       setError(null);
       try {
         await Promise.all([reloadPo(), reloadHistory(), reloadDocuments(), reloadDocumentTags()]);
-        if (user?.id) {
-          const [linePins, documentPins] = await Promise.all([
-            userService.getPinnedRows(user.id, 'po_details_lines'),
-            userService.getPinnedRows(user.id, 'po_details_documents'),
-          ]);
-          setPinnedLineKeys(linePins);
-          setPinnedDocumentKeys(documentPins);
-        }
       } catch (err: any) {
         setError(err?.response?.data?.detail || 'Failed to load PO details');
       } finally {
@@ -166,7 +158,30 @@ const PurchaseOrderDetails: React.FC = () => {
     };
 
     void loadAll();
-  }, [id, reloadPo, reloadHistory, reloadDocuments, reloadDocumentTags, user?.id]);
+  }, [id, reloadPo, reloadHistory, reloadDocuments, reloadDocumentTags]);
+
+  useEffect(() => {
+    const loadPins = async () => {
+      if (!userId) {
+        setPinnedLineKeys([]);
+        setPinnedDocumentKeys([]);
+        return;
+      }
+
+      try {
+        const [linePins, documentPins] = await Promise.all([
+          userService.getPinnedRows(userId, 'po_details_lines'),
+          userService.getPinnedRows(userId, 'po_details_documents'),
+        ]);
+        setPinnedLineKeys(linePins);
+        setPinnedDocumentKeys(documentPins);
+      } catch (err: any) {
+        setError(err?.response?.data?.detail || 'Failed to load PO detail preferences');
+      }
+    };
+
+    void loadPins();
+  }, [userId]);
 
   useEffect(() => {
     const publishChatContext = async () => {
